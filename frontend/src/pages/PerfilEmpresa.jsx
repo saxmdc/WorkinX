@@ -37,7 +37,7 @@ function PerfilEmpresa() {
       setCargandoEntrevistas(true);
 
       const respuesta = await fetch(
-        "http://localhost:3000/api/entrevistas/empresa/mis-entrevistas",
+        `${import.meta.env.VITE_API_URL}/api/entrevistas/empresa/mis-entrevistas`,
         {
           method: "GET",
           headers: {
@@ -80,7 +80,7 @@ function PerfilEmpresa() {
         setCargandoPerfil(true);
         setMensajeError("");
 
-        const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
+        const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/perfil`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -152,8 +152,8 @@ function PerfilEmpresa() {
     const esEdicion = Boolean(entrevistaEditar?.id);
 
     const url = esEdicion
-      ? `http://localhost:3000/api/entrevistas/${entrevistaEditar.id}`
-      : "http://localhost:3000/api/entrevistas";
+      ? `${import.meta.env.VITE_API_URL}/api/entrevistas/${entrevistaEditar.id}`
+      : `${import.meta.env.VITE_API_URL}/api/entrevistas`;
 
     const metodo = esEdicion ? "PUT" : "POST";
 
@@ -235,7 +235,7 @@ function PerfilEmpresa() {
       setMensajeError("");
 
       const respuesta = await fetch(
-        `http://localhost:3000/api/entrevistas/${entrevista.id}`,
+        `${import.meta.env.VITE_API_URL}/api/entrevistas/${entrevista.id}`,
         {
           method: "DELETE",
           headers: {
@@ -280,7 +280,7 @@ function PerfilEmpresa() {
       setPostulantes([]);
 
       const respuesta = await fetch(
-        `http://localhost:3000/api/postulaciones/entrevista/${entrevista.id}`,
+        `${import.meta.env.VITE_API_URL}/api/postulaciones/entrevista/${entrevista.id}`,
         {
           method: "GET",
           headers: {
@@ -323,7 +323,7 @@ const cambiarEstadoPostulacion = async (postulacionId, nuevoEstado) => {
     setMensajeError("");
 
     const respuesta = await fetch(
-      `http://localhost:3000/api/postulaciones/${postulacionId}/estado`,
+      `${import.meta.env.VITE_API_URL}/api/postulaciones/${postulacionId}/estado`,
       {
         method: "PUT",
         headers: {

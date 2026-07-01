@@ -66,7 +66,7 @@ function Entrevistas() {
         setCargando(true);
         setMensajeError("");
 
-        const respuesta = await fetch("http://localhost:3000/api/entrevistas");
+        const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/api/entrevistas`);
 
         const resultado = await respuesta.json();
 

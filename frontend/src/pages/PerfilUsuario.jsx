@@ -39,7 +39,7 @@ function PerfilUsuario() {
         setMensajeError("");
 
         const respuestaPerfil = await fetch(
-          "http://localhost:3000/api/auth/perfil",
+          `${import.meta.env.VITE_API_URL}/api/auth/perfil`,
           {
             method: "GET",
             headers: {
@@ -70,7 +70,7 @@ function PerfilUsuario() {
         setPerfil(resultadoPerfil.perfil);
 
         const respuestaPostulaciones = await fetch(
-          "http://localhost:3000/api/postulaciones/mis-postulaciones",
+          `${import.meta.env.VITE_API_URL}/api/postulaciones/mis-postulaciones`,
           {
             method: "GET",
             headers: {

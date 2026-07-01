@@ -45,7 +45,7 @@ function DetalleEntrevista() {
         setMensajeError("");
 
         const respuesta = await fetch(
-          `http://localhost:3000/api/entrevistas/${id}`
+          `${import.meta.env.VITE_API_URL}/api/entrevistas/${id}`
         );
 
         const resultado = await respuesta.json();

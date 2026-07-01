@@ -202,7 +202,7 @@ function RegistroEmpresa() {
       setCargando(true);
 
       const respuesta = await fetch(
-        "http://localhost:3000/api/auth/registro-empresa",
+        `${import.meta.env.VITE_API_URL}/api/auth/registro-empresa`,
         {
           method: "POST",
           headers: {

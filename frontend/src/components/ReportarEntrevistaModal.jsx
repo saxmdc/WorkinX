@@ -73,7 +73,7 @@ function ReportarEntrevistaModal({ entrevista, onClose }) {
     try {
       setCargando(true);
 
-      const respuesta = await fetch("http://localhost:3000/api/reportes", {
+      const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/api/reportes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

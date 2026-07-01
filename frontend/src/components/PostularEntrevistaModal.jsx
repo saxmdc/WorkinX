@@ -83,7 +83,7 @@ function PostularEntrevistaModal({ entrevista, onClose, onPostulacionExitosa }) 
     try {
       setCargando(true);
 
-      const respuesta = await fetch("http://localhost:3000/api/postulaciones", {
+      const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/api/postulaciones`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
