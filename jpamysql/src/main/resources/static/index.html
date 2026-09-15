@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios | Premium Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <h1> User<span class="gradient-text">Dash</span></h1>
+            <div class="search-bar">
+                <select id="searchType" class="glass-input">
+                    <option value="id">Buscar por ID</option>
+                    <option value="email">Buscar por Email</option>
+                    <option value="and">Buscar: Nombre Y Cargo (AND)</option>
+                    <option value="or">Buscar: Nombre O Email O Cargo (OR)</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Ej. 1 o sam@gmail.com" class="glass-input">
+                <input type="text" id="searchCargo" placeholder="Cargo (Ej. Admin)" class="glass-input hidden">
+                <input type="text" id="searchEmailExtra" placeholder="Email (Ej. sam@gmail.com)" class="glass-input hidden">
+                <button id="btnSearch" class="btn-primary">Buscar</button>
+                <button id="btnReset" class="btn-secondary">Mostrar Todos</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Formulario de Usuario -->
+            <aside class="form-panel glass-panel">
+                <h2 id="formTitle"> Nuevo Usuario</h2>
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="input-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" required class="glass-input" placeholder="Nombre completo">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required class="glass-input" placeholder="correo@ejemplo.com">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion" required class="glass-input" placeholder="Ej. Calle 123 #45-67">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="celular">Celular</label>
+                        <input type="text" id="celular" required class="glass-input" placeholder="Ej. 3001234567">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="cargo">Cargo</label>
+                        <input type="text" id="cargo" required class="glass-input" placeholder="Ej. Administrador">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="btnSave" class="btn-primary">Guardar Usuario</button>
+                        <button type="button" id="btnCancel" class="btn-secondary hidden">Cancelar Edición</button>
+                    </div>
+                </form>
+                <div id="notification" class="notification hidden"></div>
+            </aside>
+
+            <!-- Lista de Usuarios -->
+            <section class="table-panel glass-panel">
+                <h2> Directorio de Usuarios</h2>
+                <div class="table-responsive">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Dirección</th>
+                                <th>Celular</th>
+                                <th>Cargo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Los usuarios se cargarán aquí por JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ── PAGINACIÓN (NUEVO) ─────────────────────────────────
+                     Barra de navegación que aparece debajo de la tabla.
+                     Los botones y textos son generados y actualizados
+                     dinámicamente por app.js mediante renderPagination().
+                ──────────────────────────────────────────────────────── -->
+                <div class="pagination-bar" id="paginationBar">
+                    <!-- Texto informativo: "Página X de Y  •  N registros" -->
+                    <div class="pagination-info">
+                        <span id="pageInfo">Página 1 de 1</span>
+                        <span id="totalInfo" style="margin-left:1rem; color: var(--text-muted);">0 registros</span>
+                    </div>
+                    <!-- Controles de navegación -->
+                    <div class="pagination-controls">
+                        <label for="pageSize" style="font-size:0.85rem; color:var(--text-muted);">Mostrar:</label>
+                        <select id="pageSize" class="glass-input page-size-select">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                        </select>
+                        <button id="btnFirst" class="btn-page" title="Primera página">«</button>
+                        <button id="btnPrev"  class="btn-page" title="Página anterior">‹</button>
+                        <div id="pageNumbers" class="page-numbers"></div>
+                        <button id="btnNext"  class="btn-page" title="Página siguiente">›</button>
+                        <button id="btnLast"  class="btn-page" title="Última página">»</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

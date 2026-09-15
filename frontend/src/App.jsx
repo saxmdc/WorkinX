@@ -1,37 +1,44 @@
 import { Routes, Route } from "react-router";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import { AuthProvider } from "./context/AuthContext";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Registro from "./pages/Registro";
-import RegistroEmpresa from "./pages/RegistroEmpresa";
-import RegistroUsuario from "./pages/RegistroUsuario";
-import Entrevistas from "./pages/Entrevistas";
-import DetalleEntrevista from "./pages/DetalleEntrevista";
-import PerfilEmpresa from "./pages/PerfilEmpresa";
-import PerfilUsuario from "./pages/PerfilUsuario";
+import Login from "./pages/auth/Login";
+import Registro from "./pages/auth/Registro";
+import RegistroEmpresa from "./pages/auth/RegistroEmpresa";
+import RegistroUsuario from "./pages/auth/RegistroUsuario";
+import Entrevistas from "./pages/entrevistas/Entrevistas";
+import DetalleEntrevista from "./pages/entrevistas/DetalleEntrevista";
+import DirectorioEmpresas from "./pages/DirectorioEmpresas";
+import FormularioEntrevista from "./pages/entrevistas/FormularioEntrevista";
+import PerfilEmpresa from "./pages/perfil/PerfilEmpresa";
+import PerfilUsuario from "./pages/perfil/PerfilUsuario";
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Header />
 
       <main>
         <Routes>
+          {/* Rutas Públicas */}
           <Route path="/" element={<Home />} />
+          <Route path="/entrevistas" element={<Entrevistas />} />
+          <Route path="/entrevistas/:id" element={<DetalleEntrevista />} />
+          <Route path="/directorio" element={<DirectorioEmpresas />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/registro/empresa" element={<RegistroEmpresa />} />
           <Route path="/registro/usuario" element={<RegistroUsuario />} />
-          <Route path="/entrevistas" element={<Entrevistas />} />
-          <Route path="/entrevistas/:id" element={<DetalleEntrevista />} />
+          <Route path="/perfil/empresa/entrevistas/nueva" element={<FormularioEntrevista />} />
+          <Route path="/perfil/empresa/entrevistas/editar/:id" element={<FormularioEntrevista />} />
           <Route path="/perfil/empresa" element={<PerfilEmpresa />} />
           <Route path="/perfil/usuario" element={<PerfilUsuario />} />
         </Routes>
       </main>
 
       <Footer />
-    </>
+    </AuthProvider>
   );
 }
 

@@ -6,3 +6,16 @@ dist/
 build/
 uploads/
 *.log
+
+# Java & Maven
+target/
+**/target/
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+**/.idea/
+*.iml
+.vscode/

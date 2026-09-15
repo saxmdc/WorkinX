@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Empresas | JPA Microservicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .empresa-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .empresa-info h3 { margin: 0 0 5px 0; color: #0f172a; }
+        .empresa-info p { margin: 0; color: #64748b; font-size: 0.9rem; }
+        .btn-danger { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        .btn-edit { background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <h1>Empresas<span class="gradient-text">CRUD</span> (JPA)</h1>
+            <p>Microservicio JPA para la tabla Empresas</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Formulario de Crear / Editar -->
+            <section class="glass-card form-section">
+                <h2 id="formTitle">Nueva Empresa</h2>
+                <form id="empresaForm">
+                    <input type="hidden" id="empresaId">
+                    <div class="form-group">
+                        <label>Nombre de Empresa:</label>
+                        <input type="text" id="nombreEmpresa" class="glass-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Industria:</label>
+                        <input type="text" id="industria" class="glass-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="text" id="telefono" class="glass-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección:</label>
+                        <input type="text" id="direccion" class="glass-input">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" id="btnSave">Guardar Empresa</button>
+                        <button type="button" class="btn-secondary hidden" id="btnCancel">Cancelar Edición</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Lista de Empresas -->
+            <section class="glass-card list-section">
+                <h2>Directorio de Empresas</h2>
+                <div id="empresasList">
+                    <!-- Las tarjetas de empresas aparecerán aquí -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="empresas.js"></script>
+</body>
+</html>
