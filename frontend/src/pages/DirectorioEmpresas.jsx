@@ -10,6 +10,7 @@ import {
   ExternalLink,
   Plus,
   Trash2,
+  Pencil,
   AlertCircle,
   CheckCircle2,
   X
@@ -22,8 +23,9 @@ function DirectorioEmpresas() {
   const [error, setError] = useState(null);
   const [mensajeExito, setMensajeExito] = useState(null);
 
-  // Estado para el modal de agregar empresa
+  // Estado para el modal de agregar / editar empresa
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [empresaAEditar, setEmpresaAEditar] = useState(null);
   const [guardando, setGuardando] = useState(false);
   const [formEmpresa, setFormEmpresa] = useState({
     nombreEmpresa: "",
@@ -45,7 +47,6 @@ function DirectorioEmpresas() {
       const res = await fetch(API_URL);
       if (!res.ok) throw new Error("No se pudo conectar con el microservicio JPA (Puerto 8080)");
       const data = await res.json();
-      // data puede ser un array o un Page de Spring
       const lista = Array.isArray(data) ? data : (data.content || []);
       setEmpresas(lista);
     } catch (err) {
@@ -60,8 +61,38 @@ function DirectorioEmpresas() {
     cargarEmpresas();
   }, []);
 
-  // Crear empresa vía POST con CORS
-  const handleCrearEmpresa = async (e) => {
+  // Abrir modal para crear
+  const handleAbrirCrear = () => {
+    setEmpresaAEditar(null);
+    setFormEmpresa({
+      nombreEmpresa: "",
+      industria: "",
+      telefonoContacto: "",
+      direccion: "",
+      sitioWeb: "",
+      descripcion: "",
+      rangoEmpleados: "1-10"
+    });
+    setMostrarModal(true);
+  };
+
+  // Abrir modal para editar
+  const handleAbrirEditar = (emp) => {
+    setEmpresaAEditar(emp);
+    setFormEmpresa({
+      nombreEmpresa: emp.nombreEmpresa || "",
+      industria: emp.industria || "",
+      telefonoContacto: emp.telefonoContacto || "",
+      direccion: emp.direccion || "",
+      sitioWeb: emp.sitioWeb || "",
+      descripcion: emp.descripcion || "",
+      rangoEmpleados: emp.rangoEmpleados || "1-10"
+    });
+    setMostrarModal(true);
+  };
+
+  // Guardar (POST o PUT) vía CORS al microservicio JPA
+  const handleGuardarEmpresa = async (e) => {
     e.preventDefault();
     if (!formEmpresa.nombreEmpresa.trim() || !formEmpresa.industria.trim()) {
       alert("Nombre de empresa e industria son requeridos");
@@ -70,16 +101,24 @@ function DirectorioEmpresas() {
 
     setGuardando(true);
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
+      const esEdicion = Boolean(empresaAEditar);
+      const url = esEdicion ? `${API_URL}/${empresaAEditar.id}` : API_URL;
+      const metodo = esEdicion ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: metodo,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formEmpresa)
       });
-      if (!res.ok) throw new Error("Error al guardar la empresa en el microservicio JPA");
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Error al procesar la solicitud en el microservicio JPA");
+      }
       
-      setMensajeExito("¡Empresa registrada exitosamente en JPA!");
+      setMensajeExito(esEdicion ? "¡Empresa actualizada exitosamente en JPA!" : "¡Empresa registrada exitosamente en JPA!");
       setTimeout(() => setMensajeExito(null), 4000);
       setMostrarModal(false);
+      setEmpresaAEditar(null);
       setFormEmpresa({
         nombreEmpresa: "",
         industria: "",
@@ -177,7 +216,7 @@ function DirectorioEmpresas() {
           <button
             type="button"
             className="details-button"
-            onClick={() => setMostrarModal(true)}
+            onClick={handleAbrirCrear}
             style={{ display: "flex", alignItems: "center", gap: "8px" }}
           >
             <Plus size={18} />
@@ -274,7 +313,7 @@ function DirectorioEmpresas() {
                   </div>
                 </div>
 
-                <div className="interview-actions">
+                <div className="interview-actions" style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
                   {emp.sitioWeb && (
                     <a
                       href={emp.sitioWeb.startsWith("http") ? emp.sitioWeb : `https://${emp.sitioWeb}`}
@@ -288,12 +327,38 @@ function DirectorioEmpresas() {
                     </a>
                   )}
 
-                  {/* Botón eliminar vía JPA */}
+                  {/* Botón editar vía JPA (PUT) */}
+                  <button
+                    type="button"
+                    className="details-button"
+                    style={{
+                      background: "#2563eb",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "0 14px",
+                      minHeight: "42px"
+                    }}
+                    onClick={() => handleAbrirEditar(emp)}
+                    title="Editar datos mediante JPA (PUT)"
+                  >
+                    <Pencil size={16} />
+                    Editar
+                  </button>
+
+                  {/* Botón eliminar vía JPA (DELETE) */}
                   <button
                     type="button"
                     className="report-button"
                     onClick={() => handleEliminarEmpresa(emp.id, emp.nombreEmpresa)}
                     title="Eliminar del microservicio JPA"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "0 14px",
+                      minHeight: "42px"
+                    }}
                   >
                     <Trash2 size={16} />
                     Eliminar
@@ -305,7 +370,7 @@ function DirectorioEmpresas() {
         </div>
       )}
 
-      {/* Modal flotante para Crear Empresa (con estilos nativos de modal WorkInX) */}
+      {/* Modal flotante para Crear o Editar Empresa (con estilos nativos de modal WorkInX) */}
       {mostrarModal && (
         <div style={{
           position: "fixed",
@@ -325,10 +390,15 @@ function DirectorioEmpresas() {
             width: "100%",
             maxWidth: "550px",
             boxShadow: "0 24px 70px rgba(20, 35, 70, 0.25)",
-            position: "relative"
+            position: "relative",
+            maxHeight: "90vh",
+            overflowY: "auto"
           }}>
             <button
-              onClick={() => setMostrarModal(false)}
+              onClick={() => {
+                setMostrarModal(false);
+                setEmpresaAEditar(null);
+              }}
               style={{
                 position: "absolute",
                 top: "24px",
@@ -343,14 +413,20 @@ function DirectorioEmpresas() {
             </button>
 
             <div style={{ marginBottom: "24px" }}>
-              <p className="section-tag" style={{ marginBottom: "12px" }}>Crear con JPA</p>
-              <h2 style={{ fontSize: "1.8rem", color: "#101828", margin: 0 }}>Nueva Empresa</h2>
+              <p className="section-tag" style={{ marginBottom: "12px" }}>
+                {empresaAEditar ? "Actualizar con JPA (PUT)" : "Crear con JPA (POST)"}
+              </p>
+              <h2 style={{ fontSize: "1.8rem", color: "#101828", margin: 0 }}>
+                {empresaAEditar ? "Editar Empresa" : "Nueva Empresa"}
+              </h2>
               <p style={{ color: "#64748b", marginTop: "6px", fontSize: "0.95rem" }}>
-                Los datos serán insertados en la base de datos por el microservicio JPA (Puerto 8080).
+                {empresaAEditar
+                  ? `Modificando ID #${empresaAEditar.id} a través del microservicio JPA (Puerto 8080).`
+                  : "Los datos serán insertados en MySQL por el microservicio JPA (Puerto 8080)."}
               </p>
             </div>
 
-            <form onSubmit={handleCrearEmpresa}>
+            <form onSubmit={handleGuardarEmpresa}>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div>
                   <label style={{ display: "block", fontWeight: "700", color: "#334155", marginBottom: "6px", fontSize: "0.9rem" }}>
@@ -453,7 +529,10 @@ function DirectorioEmpresas() {
                 <button
                   type="button"
                   className="report-button"
-                  onClick={() => setMostrarModal(false)}
+                  onClick={() => {
+                    setMostrarModal(false);
+                    setEmpresaAEditar(null);
+                  }}
                 >
                   Cancelar
                 </button>
@@ -462,7 +541,9 @@ function DirectorioEmpresas() {
                   className="details-button"
                   disabled={guardando}
                 >
-                  {guardando ? "Guardando..." : "Guardar Empresa en JPA"}
+                  {guardando
+                    ? "Guardando en JPA..."
+                    : (empresaAEditar ? "Actualizar Empresa en JPA" : "Guardar Empresa en JPA")}
                 </button>
               </div>
             </form>
