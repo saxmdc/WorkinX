@@ -11,6 +11,7 @@ const sitioWebInput    = document.getElementById('sitioWeb');
 const descripcionInput = document.getElementById('descripcion');
 
 const formTitle        = document.getElementById('formTitle');
+const formAlert        = document.getElementById('formAlert');
 const btnSubmit        = document.getElementById('btnSubmit');
 const btnCancel        = document.getElementById('btnCancel');
 const tableBody        = document.getElementById('tableBody');
@@ -147,9 +148,71 @@ pageSizeSelect.addEventListener('change', () => {
     loadEmpresasPage();
 });
 
+// Limpiar errores visuales del formulario
+function clearFormErrors() {
+    if (formAlert) {
+        formAlert.innerHTML = '';
+        formAlert.classList.add('hidden');
+    }
+    const inputs = empresaForm.querySelectorAll('.glass-input');
+    inputs.forEach(input => input.classList.remove('input-error'));
+    
+    const errorSpans = empresaForm.querySelectorAll('.field-error-msg');
+    errorSpans.forEach(span => {
+        span.textContent = '';
+        span.classList.add('hidden');
+    });
+}
+
+// Mostrar error específico en un campo
+function setFieldError(fieldName, message) {
+    const input = document.getElementById(fieldName);
+    if (input) {
+        input.classList.add('input-error');
+    }
+    const span = document.getElementById(`err-${fieldName}`);
+    if (span) {
+        span.textContent = message;
+        span.classList.remove('hidden');
+    }
+}
+
+// Mostrar alerta consolidada arriba del formulario
+function showFormAlert(mensajes) {
+    if (!formAlert) return;
+    
+    let html = `<div class="alert-title">⚠️ Corrige los siguientes datos:</div>`;
+    if (Array.isArray(mensajes) && mensajes.length > 0) {
+        html += `<ul class="alert-list">`;
+        mensajes.forEach(msg => {
+            html += `<li>${escapeHtml(msg)}</li>`;
+        });
+        html += `</ul>`;
+    } else if (typeof mensajes === 'string') {
+        html += `<div>${escapeHtml(mensajes)}</div>`;
+    }
+    formAlert.innerHTML = html;
+    formAlert.classList.remove('hidden');
+}
+
+// Limpiar error de un campo cuando el usuario empieza a escribir
+[nombreInput, industriaInput, telefonoInput, direccionInput, sitioWebInput, descripcionInput].forEach(input => {
+    if (input) {
+        input.addEventListener('input', () => {
+            input.classList.remove('input-error');
+            const span = document.getElementById(`err-${input.id}`);
+            if (span) {
+                span.textContent = '';
+                span.classList.add('hidden');
+            }
+        });
+    }
+});
+
 // Guardar o Actualizar Empresa (RETO 4: Manejo de errores de validación)
 empresaForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearFormErrors();
 
     const empresa = {
         nombreEmpresa: nombreInput.value.trim(),
@@ -172,20 +235,40 @@ empresaForm.addEventListener('submit', async (e) => {
         });
 
         if (!res.ok) {
-            const errorMsg = await res.text();
-            throw new Error(errorMsg || 'Error al procesar la solicitud');
+            let errorData = null;
+            try {
+                errorData = await res.json();
+            } catch {
+                const text = await res.text();
+                errorData = { mensaje: text };
+            }
+
+            // Si el backend devolvió errores por campo (Reto 4 & Reto 2)
+            if (errorData && errorData.campos) {
+                Object.entries(errorData.campos).forEach(([field, msg]) => {
+                    setFieldError(field, msg);
+                });
+            }
+
+            // Mostrar la alerta en el formulario
+            const listaMensajes = errorData.mensajes || (errorData.mensaje ? [errorData.mensaje] : ['Error al guardar la empresa']);
+            showFormAlert(listaMensajes);
+            showNotification('Revisa los campos señalados en rojo', 'error');
+            return;
         }
 
         showNotification(id ? 'Empresa actualizada exitosamente' : 'Empresa creada exitosamente', 'success');
         resetForm();
         loadEmpresasPage();
     } catch (err) {
+        showFormAlert([err.message || 'Error de conexión con el servidor']);
         showNotification(err.message, 'error');
     }
 });
 
 // Editar Empresa (Cargar en formulario)
 window.editarEmpresa = async (id) => {
+    clearFormErrors();
     try {
         const res = await fetch(`${API_URL}/${id}`);
         if (!res.ok) throw new Error('No se encontró la empresa');
@@ -227,6 +310,7 @@ window.eliminarEmpresa = async (id) => {
 btnCancel.addEventListener('click', resetForm);
 
 function resetForm() {
+    clearFormErrors();
     empresaForm.reset();
     empresaIdInput.value = '';
     formTitle.textContent = 'Nueva Empresa';
@@ -293,16 +377,23 @@ function escapeHtml(str) {
 }
 
 function showNotification(msg, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) {
+        alert(msg);
+        return;
+    }
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    toast.textContent = msg;
-    const container = document.getElementById('toastContainer');
-    if (container) {
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    } else {
-        alert(msg);
-    }
+    const icon = type === 'success' ? '✅' : (type === 'warn' ? '⚠️' : '❌');
+    toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(msg)}</span>`;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(30px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
 }
 
 // Iniciar cargando la primera página
