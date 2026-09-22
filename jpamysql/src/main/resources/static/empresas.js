@@ -68,26 +68,34 @@ empresaForm.addEventListener('submit', async (e) => {
     try {
         if (id) {
             // Actualizar (PUT)
-            await fetch(`${API_URL}/${id}`, {
+            const res = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(empresa)
             });
+            if (!res.ok) {
+                const msg = await res.text();
+                throw new Error(msg || 'Error del servidor al actualizar');
+            }
             alert('Empresa actualizada exitosamente');
         } else {
             // Crear (POST)
-            await fetch(API_URL, {
+            const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(empresa)
             });
+            if (!res.ok) {
+                const msg = await res.text();
+                throw new Error(msg || 'Error del servidor al guardar');
+            }
             alert('Empresa creada exitosamente');
         }
         resetForm();
         cargarEmpresas();
     } catch (error) {
         console.error("Error al guardar:", error);
-        alert('Ocurrió un error al guardar.');
+        alert('Ocurrió un error al guardar: ' + error.message);
     }
 });
 
@@ -115,11 +123,16 @@ window.editarEmpresa = async (id) => {
 window.borrarEmpresa = async (id) => {
     if (confirm("¿Estás seguro de que deseas eliminar esta empresa?")) {
         try {
-            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (!res.ok) {
+                const msg = await res.text();
+                throw new Error(msg || 'Error del servidor al eliminar');
+            }
             alert('Empresa eliminada');
             cargarEmpresas();
         } catch (error) {
             console.error("Error al eliminar:", error);
+            alert("Error al eliminar: " + error.message);
         }
     }
 };

@@ -47,6 +47,18 @@ public class EmpresaController {
     // CREATE: Crear una nueva empresa (C del CRUD)
     @PostMapping
     public ResponseEntity<Empresa> crearEmpresa(@RequestBody Empresa nuevaEmpresa) {
+        if (nuevaEmpresa.getClasificacionEmpresa() == null) {
+            nuevaEmpresa.setClasificacionEmpresa("mediana_empresa");
+        }
+        if (nuevaEmpresa.getTipoEntidad() == null) {
+            nuevaEmpresa.setTipoEntidad("privada");
+        }
+        if (nuevaEmpresa.getAceptaTerminos() == null) {
+            nuevaEmpresa.setAceptaTerminos(1);
+        }
+        if (nuevaEmpresa.getRangoEmpleados() == null || nuevaEmpresa.getRangoEmpleados().trim().isEmpty()) {
+            nuevaEmpresa.setRangoEmpleados("1-10");
+        }
         Empresa guardada = empresaRepository.save(nuevaEmpresa);
         return ResponseEntity.ok(guardada);
     }

@@ -15,7 +15,7 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id", nullable = false)
+    @Column(name = "usuario_id")
     private Long usuarioId;
 
     @Column(name = "nombre_empresa")
@@ -35,6 +35,15 @@ public class Empresa {
     
     @Column(name = "rango_empleados")
     private String rangoEmpleados;
+
+    @Column(name = "clasificacion_empresa")
+    private String clasificacionEmpresa = "mediana_empresa";
+
+    @Column(name = "tipo_entidad")
+    private String tipoEntidad = "privada";
+
+    @Column(name = "acepta_terminos")
+    private Integer aceptaTerminos = 1;
 
     public Empresa() {}
 
@@ -67,4 +76,13 @@ public class Empresa {
 
     public String getRangoEmpleados() { return rangoEmpleados; }
     public void setRangoEmpleados(String rangoEmpleados) { this.rangoEmpleados = rangoEmpleados; }
+
+    public String getClasificacionEmpresa() { return clasificacionEmpresa; }
+    public void setClasificacionEmpresa(String clasificacionEmpresa) { this.clasificacionEmpresa = clasificacionEmpresa; }
+
+    public String getTipoEntidad() { return tipoEntidad; }
+    public void setTipoEntidad(String tipoEntidad) { this.tipoEntidad = tipoEntidad; }
+
+    public Integer getAceptaTerminos() { return aceptaTerminos; }
+    public void setAceptaTerminos(Integer aceptaTerminos) { this.aceptaTerminos = aceptaTerminos; }
 }

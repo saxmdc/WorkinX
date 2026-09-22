@@ -32,8 +32,7 @@ function DirectorioEmpresas() {
     direccion: "",
     sitioWeb: "",
     descripcion: "",
-    rangoEmpleados: "1-10",
-    usuarioId: 1
+    rangoEmpleados: "1-10"
   });
 
   const API_URL = "http://localhost:8080/api/empresas";
@@ -88,8 +87,7 @@ function DirectorioEmpresas() {
         direccion: "",
         sitioWeb: "",
         descripcion: "",
-        rangoEmpleados: "1-10",
-        usuarioId: 1
+        rangoEmpleados: "1-10"
       });
       cargarEmpresas();
     } catch (err) {
