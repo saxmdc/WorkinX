@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,7 +120,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 5. Manejador general de excepciones no controladas
+     * 5. Manejo de recursos o rutas no encontradas (HTTP 404)
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResourceFound(NoResourceFoundException ex) {
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("error", "Recurso no encontrado");
+        respuesta.put("mensaje", "La ruta solicitada no existe: /" + ex.getResourcePath());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+    }
+
+    /**
+     * 6. Manejador general de excepciones no controladas
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
