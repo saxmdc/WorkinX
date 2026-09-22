@@ -103,9 +103,9 @@ function Header() {
         <a href="/#quienes-somos">Quiénes somos</a>
         <a href="/#mision-vision">Misión y visión</a>
         <Link to="/entrevistas">Entrevistas</Link>
-        <Link to="/directorio">
+        <a href="http://localhost:8080" target="_blank" rel="noopener noreferrer">
           Directorio Empresas (JPA)
-        </Link>
+        </a>
 
         {!isAuthenticated ? (
           <>

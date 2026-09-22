@@ -6,7 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
+/**
+ * Entidad Empresa que mapea la tabla 'empresas' de la base de datos 'workinx'.
+ * Incluye 5 validaciones con anotaciones de Jakarta Validation (RETO 4).
+ */
 @Entity
 @Table(name = "empresas")
 public class Empresa {
@@ -18,23 +25,32 @@ public class Empresa {
     @Column(name = "usuario_id")
     private Long usuarioId;
 
+    // Validación 1 y 2
+    @NotBlank(message = "El nombre de la empresa es obligatorio")
+    @Size(min = 2, max = 150, message = "El nombre debe tener entre 2 y 150 caracteres")
     @Column(name = "nombre_empresa")
     private String nombreEmpresa;
 
     private String nit;
     private String descripcion;
+    
+    // Validación 3 y 4
+    @NotBlank(message = "La industria es obligatoria")
+    @Size(max = 100, message = "La industria no puede superar 100 caracteres")
     private String industria;
     
     @Column(name = "sitio_web")
     private String sitioWeb;
     
+    // Validación 5
+    @Pattern(regexp = "^[0-9+ -]*$", message = "El teléfono solo debe contener números, espacios o guiones")
     @Column(name = "telefono_contacto")
     private String telefonoContacto;
     
     private String direccion;
     
     @Column(name = "rango_empleados")
-    private String rangoEmpleados;
+    private String rangoEmpleados = "1-10";
 
     @Column(name = "clasificacion_empresa")
     private String clasificacionEmpresa = "mediana_empresa";

@@ -9,7 +9,6 @@ import RegistroEmpresa from "./pages/auth/RegistroEmpresa";
 import RegistroUsuario from "./pages/auth/RegistroUsuario";
 import Entrevistas from "./pages/entrevistas/Entrevistas";
 import DetalleEntrevista from "./pages/entrevistas/DetalleEntrevista";
-import DirectorioEmpresas from "./pages/DirectorioEmpresas";
 import FormularioEntrevista from "./pages/entrevistas/FormularioEntrevista";
 import PerfilEmpresa from "./pages/perfil/PerfilEmpresa";
 import PerfilUsuario from "./pages/perfil/PerfilUsuario";
@@ -25,7 +24,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/entrevistas" element={<Entrevistas />} />
           <Route path="/entrevistas/:id" element={<DetalleEntrevista />} />
-          <Route path="/directorio" element={<DirectorioEmpresas />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/registro/empresa" element={<RegistroEmpresa />} />
